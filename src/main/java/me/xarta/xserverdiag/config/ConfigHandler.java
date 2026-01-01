@@ -27,7 +27,7 @@ public class ConfigHandler {
 
         TPS_FORMAT = BUILDER
                 .comment("TPS Message (%tps%, %1mtps%, %5mtps%, %15mtps%)")
-                .define("tps-format", "&e&lTPS &fCurrent: %tps% &8| &f1m: %1mtps% &8| &f5m: %5mtps% &8| &f15m: %15mtps%");
+                .define("tps-format", "&e&lTPS &fCurrent: %tps% &8| &f1%minute%: %1mtps% &8| &f5%minute%: %5mtps% &8| &f15%minute%: %15mtps%");
 
         GOOD_TPS_COLOR = BUILDER
                 .comment("Color of good TPS")
@@ -55,31 +55,31 @@ public class ConfigHandler {
 
         SECOND = BUILDER
                 .comment("Second")
-                .define("second", "s.");
+                .define("second", "s");
 
         MINUTE = BUILDER
                 .comment("Minute")
-                .define("minute", "m.");
+                .define("minute", "m");
 
         HOUR = BUILDER
                 .comment("Hour")
-                .define("hour", "h.");
+                .define("hour", "h");
 
         DAY = BUILDER
                 .comment("Day")
-                .define("day", "d.");
+                .define("day", "d");
 
         WEEK = BUILDER
                 .comment("Week")
-                .define("week", "w.");
+                .define("week", "w");
 
         MONTH = BUILDER
                 .comment("Month")
-                .define("month", "M.");
+                .define("month", "M");
 
         YEAR = BUILDER
                 .comment("Year")
-                .define("year", "y.");
+                .define("year", "y");
 
         BUILDER.pop();
         SPEC = BUILDER.build();

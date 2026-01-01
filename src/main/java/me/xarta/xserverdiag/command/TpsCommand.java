@@ -31,7 +31,8 @@ public final class TpsCommand {
                             double t5m   = TpsTracker.getTps5m();
                             double t15m  = TpsTracker.getTps15m();
 
-                            String format = ConfigHandler.TPS_FORMAT.get();
+                            String format = ConfigHandler.TPS_FORMAT.get()
+                                    .replace("%minute%", ConfigHandler.MINUTE.get());
 
                             String msg = format
                                     .replace("%tps%",     coloredTps(tNow))
