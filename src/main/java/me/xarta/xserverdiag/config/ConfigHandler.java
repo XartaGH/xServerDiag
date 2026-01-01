@@ -26,7 +26,7 @@ public class ConfigHandler {
         BUILDER.comment("You can change some of mod's settings there.");
 
         TPS_FORMAT = BUILDER
-                .comment("TPS Message (%tps%, %1mtps%, %5mtps%, %15mtps%)")
+                .comment("TPS Message (%tps%, %1mtps%, %5mtps%, %15mtps%, %minute%)")
                 .define("tps-format", "&e&lTPS &fCurrent: %tps% &8| &f1%minute%: %1mtps% &8| &f5%minute%: %5mtps% &8| &f15%minute%: %15mtps%");
 
         GOOD_TPS_COLOR = BUILDER
