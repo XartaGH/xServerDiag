@@ -6,6 +6,7 @@ import me.xarta.xserverdiag.event.UptimeTracker;
 import me.xarta.xserverdiag.event.TpsTracker;
 import me.xarta.xserverdiag.event.WorldStatsTracker;
 import me.xarta.xserverdiag.util.ColorUtil;
+import me.xarta.xserverdiag.util.TpsFormatUtil;
 import me.xarta.xserverdiag.util.PermissionUtil;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -50,16 +51,18 @@ public final class GcCommand {
                             String freeStr  = mbWithGrouping(freeMem);
 
                             String uptimeStr = UptimeTracker.getFormattedUptime();
-                            String tpsStr    = String.format(Locale.ROOT, "%.0f", Math.min(20.0, TpsTracker.getTpsCurrent()));
 
                             String worldName = level.dimension().location().toString();
 
                             WorldStatsTracker.Stats s = WorldStatsTracker.snapshot(level);
 
+                            double tpsNow = TpsTracker.getTpsCurrent();
+                            String tpsColored = TpsFormatUtil.coloredTps(tpsNow);
+
                             for (String raw : lines) {
                                 String msg = raw
                                         .replace("%uptime%",   uptimeStr)
-                                        .replace("%tps%",      tpsStr)
+                                        .replace("%tps%",      tpsColored)
                                         .replace("%max_mem%",  maxStr)
                                         .replace("%all_mem%",  totalStr)
                                         .replace("%free_mem%", freeStr)

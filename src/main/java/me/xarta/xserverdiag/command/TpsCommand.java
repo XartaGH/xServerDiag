@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import me.xarta.xserverdiag.config.ConfigHandler;
 import me.xarta.xserverdiag.util.PermissionUtil;
 import me.xarta.xserverdiag.util.ColorUtil;
+import me.xarta.xserverdiag.util.TpsFormatUtil;
 import me.xarta.xserverdiag.event.TpsTracker;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -15,8 +16,6 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 @EventBusSubscriber(modid = "xserverdiag", value = Dist.DEDICATED_SERVER)
 public final class TpsCommand {
-    private static final double GOOD_EDGE = 19.8;
-    private static final double WARN_EDGE = 18.0;
 
     @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
@@ -35,10 +34,10 @@ public final class TpsCommand {
                                     .replace("%minute%", ConfigHandler.MINUTE.get());
 
                             String msg = format
-                                    .replace("%tps%",     coloredTps(tNow))
-                                    .replace("%1mtps%",   coloredTps(t1m))
-                                    .replace("%5mtps%",   coloredTps(t5m))
-                                    .replace("%15mtps%",  coloredTps(t15m));
+                                    .replace("%tps%",     TpsFormatUtil.coloredTps(tNow))
+                                    .replace("%1mtps%",   TpsFormatUtil.coloredTps(t1m))
+                                    .replace("%5mtps%",   TpsFormatUtil.coloredTps(t5m))
+                                    .replace("%15mtps%",  TpsFormatUtil.coloredTps(t15m));
 
                             msg = ColorUtil.ampersandToSection(msg);
 
@@ -46,23 +45,5 @@ public final class TpsCommand {
                             return 1;
                         })
         );
-    }
-
-    private static String coloredTps(double tps) {
-        String color = pickColor(tps);
-        return color + formatTps(tps) + "&r";
-    }
-
-    private static String pickColor(double tps) {
-        String good = ConfigHandler.GOOD_TPS_COLOR.get();
-        String warn = ConfigHandler.WARN_TPS_COLOR.get();
-        String bad  = ConfigHandler.BAD_TPS_COLOR.get();
-        if (tps >= GOOD_EDGE) return good;
-        if (tps >= WARN_EDGE) return warn;
-        return bad;
-    }
-
-    private static String formatTps(double t) {
-        return String.format(java.util.Locale.ROOT, "%.2f", Math.min(20.0, t));
     }
 }
