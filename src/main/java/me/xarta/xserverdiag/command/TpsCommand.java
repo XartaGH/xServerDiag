@@ -3,6 +3,7 @@ package me.xarta.xserverdiag.command;
 import com.mojang.brigadier.CommandDispatcher;
 import me.xarta.xserverdiag.config.ConfigHandler;
 import me.xarta.xserverdiag.util.PermissionUtil;
+import me.xarta.xserverdiag.util.ColorUtil;
 import me.xarta.xserverdiag.event.TpsTracker;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -62,13 +63,5 @@ public final class TpsCommand {
 
     private static String formatTps(double t) {
         return String.format(java.util.Locale.ROOT, "%.2f", Math.min(20.0, t));
-    }
-
-    static final class ColorUtil {
-        static String ampersandToSection(String s) {
-            if (s == null || s.isEmpty()) return s;
-            s = s.replace("&amp;", "&");
-            return s.replace("&", "§");
-        }
     }
 }
