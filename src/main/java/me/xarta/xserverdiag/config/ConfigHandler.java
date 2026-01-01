@@ -2,6 +2,8 @@ package me.xarta.xserverdiag.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 
+import java.util.List;
+
 public class ConfigHandler {
 
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
@@ -20,6 +22,9 @@ public class ConfigHandler {
     public static final ModConfigSpec.ConfigValue<String> WEEK;
     public static final ModConfigSpec.ConfigValue<String> MONTH;
     public static final ModConfigSpec.ConfigValue<String> YEAR;
+    public static final ModConfigSpec.ConfigValue<List<String>> GC_FORMAT;
+    public static final ModConfigSpec.ConfigValue<Boolean> GC_PERMISSION;
+
 
     static {
         BUILDER.push("xServerDiag Configuration");
@@ -80,6 +85,29 @@ public class ConfigHandler {
         YEAR = BUILDER
                 .comment("Year")
                 .define("year", "y");
+
+        GC_FORMAT = BUILDER
+                .comment("GC format, available placeholders: %uptime%, %tps%, %max_mem%, %all_mem%, %free_mem%, %world%, %chunks%, %entities%, %tiles%")
+                .define(
+                        "gc-format",
+                        List.of(
+                                "&fUptime: &a%uptime%",
+                                "&fCurrent TPS = %tps%",
+                                "&fMaximum memory: &a%max_mem%",
+                                "&fAllocated memory: &a%all_mem%",
+                                "&fFree memory: &a%free_mem%",
+                                "&fWorld &a%world%&f: &a%chunks% &fchunks, &a%entities% &fentities, &a%tiles% &ftiles"
+                        ),
+                        o -> {
+                            if (!(o instanceof List<?> list)) return false;
+                            for (Object e : list) if (!(e instanceof String)) return false;
+                            return true;
+                        }
+                );
+
+        GC_PERMISSION = BUILDER
+                .comment("Whether the permission xserverdiag.gc required for /gc command execution")
+                .define("gc-permission", true);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

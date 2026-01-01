@@ -1,0 +1,85 @@
+package me.xarta.xserverdiag.command;
+
+import com.mojang.brigadier.CommandDispatcher;
+import me.xarta.xserverdiag.config.ConfigHandler;
+import me.xarta.xserverdiag.event.UptimeTracker;
+import me.xarta.xserverdiag.event.TpsTracker;
+import me.xarta.xserverdiag.event.WorldStatsTracker;
+import me.xarta.xserverdiag.util.ColorUtil;
+import me.xarta.xserverdiag.util.PermissionUtil;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
+
+@EventBusSubscriber(modid = "xserverdiag", value = Dist.DEDICATED_SERVER)
+public final class GcCommand {
+    private static final String NODE = "xserverdiag.gc";
+
+    @SubscribeEvent
+    public static void onRegisterCommands(RegisterCommandsEvent event) {
+        CommandDispatcher<CommandSourceStack> d = event.getDispatcher();
+
+        d.register(
+                Commands.literal("gc")
+                        .requires(src -> PermissionUtil.canUse(src, NODE, ConfigHandler.GC_PERMISSION.get()))
+                        .executes(ctx -> {
+                            List<String> lines = ConfigHandler.GC_FORMAT.get();
+                            if (lines.isEmpty()) {
+                                ctx.getSource().sendSystemMessage(Component.literal("§cNo gc-format lines configured."));
+                                return 1;
+                            }
+
+                            CommandSourceStack source = ctx.getSource();
+                            ServerLevel level = source.getLevel();
+
+                            long maxMem   = Runtime.getRuntime().maxMemory();
+                            long totalMem = Runtime.getRuntime().totalMemory();
+                            long freeMem  = Runtime.getRuntime().freeMemory();
+
+                            String maxStr   = mbWithGrouping(maxMem);
+                            String totalStr = mbWithGrouping(totalMem);
+                            String freeStr  = mbWithGrouping(freeMem);
+
+                            String uptimeStr = UptimeTracker.getFormattedUptime();
+                            String tpsStr    = String.format(Locale.ROOT, "%.0f", Math.min(20.0, TpsTracker.getTpsCurrent()));
+
+                            String worldName = level.dimension().location().toString();
+
+                            WorldStatsTracker.Stats s = WorldStatsTracker.snapshot(level);
+
+                            for (String raw : lines) {
+                                String msg = raw
+                                        .replace("%uptime%",   uptimeStr)
+                                        .replace("%tps%",      tpsStr)
+                                        .replace("%max_mem%",  maxStr)
+                                        .replace("%all_mem%",  totalStr)
+                                        .replace("%free_mem%", freeStr)
+                                        .replace("%world%",    worldName)
+                                        .replace("%chunks%",   String.valueOf(s.chunks))
+                                        .replace("%entities%", String.valueOf(s.entities))
+                                        .replace("%tiles%",    String.valueOf(s.tiles));
+
+                                msg = ColorUtil.ampersandToSection(msg);
+                                source.sendSystemMessage(Component.literal(msg));
+                            }
+                            return 1;
+                        })
+        );
+    }
+
+    private static String mbWithGrouping(long bytes) {
+        long mb = Math.max(0L, bytes / (1024L * 1024L));
+        NumberFormat nf = NumberFormat.getIntegerInstance(Locale.ROOT);
+        String grouped = nf.format(mb);
+        return grouped.replace(',', ' ') + " MB";
+    }
+}
