@@ -1,5 +1,6 @@
 package me.xarta.xserverdiag.event;
 
+import me.xarta.xserverdiag.XServerDiag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -13,7 +14,7 @@ import net.neoforged.neoforge.event.level.ChunkEvent;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = "xserverdiag")
+@EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = XServerDiag.MODID)
 public final class WorldStatsTracker {
     public static final class Stats {
         public int chunks;

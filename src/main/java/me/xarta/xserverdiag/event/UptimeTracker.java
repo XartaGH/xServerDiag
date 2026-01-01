@@ -1,12 +1,13 @@
 package me.xarta.xserverdiag.event;
 
+import me.xarta.xserverdiag.XServerDiag;
 import me.xarta.xserverdiag.config.ConfigHandler;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
-@EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = "xserverdiag")
+@EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = XServerDiag.MODID)
 public final class UptimeTracker {
     private static long startNanos = -1L;
 

@@ -1,11 +1,12 @@
 package me.xarta.xserverdiag.event;
 
+import me.xarta.xserverdiag.XServerDiag;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
-@EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = "xserverdiag")
+@EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = XServerDiag.MODID)
 public final class TpsTracker {
     private static final int CURRENT_WINDOW = 20;
     private static final int ONE_MIN_WINDOW = 20 * 60;
