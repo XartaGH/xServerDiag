@@ -24,6 +24,8 @@ public class ConfigHandler {
     public static final ModConfigSpec.ConfigValue<String> YEAR;
     public static final ModConfigSpec.ConfigValue<List<String>> GC_FORMAT;
     public static final ModConfigSpec.ConfigValue<Boolean> GC_PERMISSION;
+    public static final ModConfigSpec.ConfigValue<String> NO_PERMISSION_MESSAGE;
+    public static final ModConfigSpec.ConfigValue<Boolean> ADD_SLASH;
 
 
     static {
@@ -108,6 +110,14 @@ public class ConfigHandler {
         GC_PERMISSION = BUILDER
                 .comment("Whether the permission xserverdiag.gc required for /gc command execution")
                 .define("gc-permission", true);
+
+        NO_PERMISSION_MESSAGE = BUILDER
+                .comment("Message shown when player has no permission (%command% is placeholder)")
+                .define("no-permission-message", "&cYou don't have permission to execute &4%command%");
+
+        ADD_SLASH = BUILDER
+                .comment("Add slash to %command%")
+                .define("add-slash", true);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

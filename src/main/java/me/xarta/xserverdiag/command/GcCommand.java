@@ -2,12 +2,12 @@ package me.xarta.xserverdiag.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import me.xarta.xserverdiag.config.ConfigHandler;
-import me.xarta.xserverdiag.event.UptimeTracker;
 import me.xarta.xserverdiag.event.TpsTracker;
+import me.xarta.xserverdiag.event.UptimeTracker;
 import me.xarta.xserverdiag.event.WorldStatsTracker;
 import me.xarta.xserverdiag.util.ColorUtil;
+import me.xarta.xserverdiag.util.Perms;
 import me.xarta.xserverdiag.util.TpsFormatUtil;
-import me.xarta.xserverdiag.util.PermissionUtil;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -24,22 +24,26 @@ import java.util.Locale;
 @EventBusSubscriber(modid = "xserverdiag", value = Dist.DEDICATED_SERVER)
 public final class GcCommand {
     private static final String NODE = "xserverdiag.gc";
+    private static final String CMD = "gc";
 
     @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> d = event.getDispatcher();
 
         d.register(
-                Commands.literal("gc")
-                        .requires(src -> PermissionUtil.canUse(src, NODE, ConfigHandler.GC_PERMISSION.get()))
+                Commands.literal(CMD)
                         .executes(ctx -> {
+                            CommandSourceStack source = ctx.getSource();
+                            if (Perms.denied(source, NODE, ConfigHandler.GC_PERMISSION.get(), CMD)) {
+                                return 0;
+                            }
+
                             List<String> lines = ConfigHandler.GC_FORMAT.get();
                             if (lines.isEmpty()) {
-                                ctx.getSource().sendSystemMessage(Component.literal("§cNo gc-format lines configured."));
+                                source.sendSystemMessage(Component.literal("§cNo gc-format lines configured."));
                                 return 1;
                             }
 
-                            CommandSourceStack source = ctx.getSource();
                             ServerLevel level = source.getLevel();
 
                             long maxMem   = Runtime.getRuntime().maxMemory();
@@ -51,7 +55,6 @@ public final class GcCommand {
                             String freeStr  = mbWithGrouping(freeMem);
 
                             String uptimeStr = UptimeTracker.getFormattedUptime();
-
                             String worldName = level.dimension().location().toString();
 
                             WorldStatsTracker.Stats s = WorldStatsTracker.snapshot(level);

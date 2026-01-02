@@ -8,6 +8,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import org.slf4j.Logger;
 
+@SuppressWarnings("unused")
 @Mod(XServerDiag.MODID)
 public class XServerDiag {
 
