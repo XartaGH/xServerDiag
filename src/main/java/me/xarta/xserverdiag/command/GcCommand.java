@@ -32,6 +32,7 @@ public final class GcCommand {
 
         d.register(
                 Commands.literal(CMD)
+                        .requires(src -> Perms.has(src, NODE, ConfigHandler.GC_PERMISSION.get(), Commands.LEVEL_ADMINS))
                         .executes(ctx -> {
                             CommandSourceStack source = ctx.getSource();
                             if (Perms.denied(source, NODE, ConfigHandler.GC_PERMISSION.get(), CMD)) {

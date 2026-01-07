@@ -25,6 +25,7 @@ public final class TpsCommand {
 
         d.register(
                 Commands.literal(CMD)
+                        .requires(src -> Perms.has(src, NODE, ConfigHandler.TPS_PERMISSION.get(), Commands.LEVEL_ADMINS))
                         .executes(ctx -> {
                             CommandSourceStack src = ctx.getSource();
                             if (Perms.denied(src, NODE, ConfigHandler.TPS_PERMISSION.get(), CMD)) {

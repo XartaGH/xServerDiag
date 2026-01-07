@@ -24,12 +24,12 @@ public final class UptimeCommand {
 
         d.register(
                 Commands.literal(CMD)
+                        .requires(src -> Perms.has(src, NODE, ConfigHandler.UPTIME_PERMISSION.get(), Commands.LEVEL_ADMINS))
                         .executes(ctx -> {
                             CommandSourceStack src = ctx.getSource();
                             if (Perms.denied(src, NODE, ConfigHandler.UPTIME_PERMISSION.get(), CMD)) {
                                 return 0;
                             }
-
                             String uptime = UptimeTracker.getFormattedUptime();
                             String msg = ConfigHandler.UPTIME_FORMAT.get().replace("%uptime%", uptime);
                             msg = ColorUtil.ampersandToSection(msg);
